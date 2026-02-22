@@ -14,6 +14,10 @@ metadata:
 
 Call paid APIs from OctoRail. Payments happen automatically via x402 (USDC on Base Sepolia). Dependencies are auto-installed on first use.
 
+## After installation
+
+Run `./scripts/octorail.sh wallet` to see your wallet address. Fund it with USDC on Base Sepolia before calling any paid API. No ETH needed — payments are gasless permit signatures.
+
 ## Commands
 
 ### Browse APIs

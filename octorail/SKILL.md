@@ -16,21 +16,21 @@ Call paid APIs from OctoRail. Payments happen automatically via x402 (USDC on Ba
 
 ## After installation
 
-Run `./scripts/octorail.sh wallet` to see your wallet address. Fund it with USDC on Base Sepolia before calling any paid API. No ETH needed — payments are gasless permit signatures.
+Run `octorail wallet` to see your wallet address. Fund it with USDC on Base Sepolia before calling any paid API. No ETH needed — payments are gasless permit signatures.
 
 ## Commands
 
 ### Browse APIs
 
 ```bash
-./scripts/octorail.sh list
-./scripts/octorail.sh list --search "image generation"
+octorail list
+octorail list --search "image generation"
 ```
 
 ### Get API Details (ALWAYS before calling)
 
 ```bash
-./scripts/octorail.sh get <owner> <slug>
+octorail get <owner> <slug>
 ```
 
 Returns the API's inputSchema — the parameters you must send. **Never call an API without checking its schema first.**
@@ -38,7 +38,7 @@ Returns the API's inputSchema — the parameters you must send. **Never call an 
 ### Approve an API
 
 ```bash
-./scripts/octorail.sh approve <owner> <slug> --max-price 0.01
+octorail approve <owner> <slug> --max-price 0.01
 ```
 
 The user must approve an API before it can be called. Always show the API name and price before approving.
@@ -46,7 +46,7 @@ The user must approve an API before it can be called. Always show the API name a
 ### Call an API (COSTS REAL MONEY)
 
 ```bash
-./scripts/octorail.sh call <owner> <slug> --body '{"prompt":"a cat"}'
+octorail call <owner> <slug> --body '{"prompt":"a cat"}'
 ```
 
 This sends USDC. **NEVER call without explicit user permission.** Always confirm the price first.
@@ -54,25 +54,25 @@ This sends USDC. **NEVER call without explicit user permission.** Always confirm
 ### Revoke Approval
 
 ```bash
-./scripts/octorail.sh revoke <owner> <slug>
+octorail revoke <owner> <slug>
 ```
 
 ### List Approved APIs
 
 ```bash
-./scripts/octorail.sh approved
+octorail approved
 ```
 
 ### Spending History
 
 ```bash
-./scripts/octorail.sh history
+octorail history
 ```
 
 ### Wallet Info
 
 ```bash
-./scripts/octorail.sh wallet
+octorail wallet
 ```
 
 Shows the wallet address. The user must fund it with USDC on Base Sepolia to use paid APIs.

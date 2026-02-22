@@ -2,7 +2,13 @@
 set -euo pipefail
 
 OCTORAIL_DIR="$HOME/.octorail"
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+SOURCE="$0"
+while [ -L "$SOURCE" ]; do
+  DIR="$(cd "$(dirname "$SOURCE")" && pwd)"
+  SOURCE="$(readlink "$SOURCE")"
+  [[ "$SOURCE" != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+SCRIPT_DIR="$(cd "$(dirname "$SOURCE")" && pwd)"
 CLI_SRC="$SCRIPT_DIR/cli.mjs"
 CLI_DST="$OCTORAIL_DIR/cli.mjs"
 
@@ -18,6 +24,14 @@ fi
 # Copy cli.mjs if new or changed
 if [ ! -f "$CLI_DST" ] || ! cmp -s "$CLI_SRC" "$CLI_DST"; then
   cp "$CLI_SRC" "$CLI_DST"
+fi
+
+# Self-install: symlink to ~/.local/bin/octorail
+BIN_DIR="$HOME/.local/bin"
+BIN_LINK="$BIN_DIR/octorail"
+if [ ! -L "$BIN_LINK" ] || [ "$(readlink "$BIN_LINK")" != "$SCRIPT_DIR/octorail.sh" ]; then
+  mkdir -p "$BIN_DIR"
+  ln -sf "$SCRIPT_DIR/octorail.sh" "$BIN_LINK"
 fi
 
 exec node "$CLI_DST" "$@"

@@ -127,10 +127,22 @@ function createClient(privateKey) {
   registerExactEvmScheme(client, { signer });
   const fetchWithPayment = wrapFetchWithPayment(fetch, client);
 
+  async function getWalletHeaders() {
+    const ts = String(Date.now());
+    const message = `octorail:${ts}`;
+    const signature = await signer.signMessage({ message });
+    return {
+      "x-wallet": signer.address,
+      "x-wallet-sig": signature,
+      "x-wallet-ts": ts,
+    };
+  }
+
   async function request(path, options = {}) {
     const url = `${baseUrl}${path}`;
+    const walletHeaders = await getWalletHeaders();
     const res = await fetchWithPayment(url, {
-      headers: { "Content-Type": "application/json", ...options.headers },
+      headers: { "Content-Type": "application/json", ...walletHeaders, ...options.headers },
       ...options,
     });
 

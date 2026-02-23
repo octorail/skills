@@ -3,9 +3,14 @@
 import { mkdir, readFile, writeFile, chmod } from "node:fs/promises";
 import { join } from "node:path";
 import { homedir } from "node:os";
+import { createPublicClient, http, formatUnits } from "viem";
+import { baseSepolia } from "viem/chains";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { x402Client, wrapFetchWithPayment } from "@x402/fetch";
 import { registerExactEvmScheme } from "@x402/evm/exact/client";
+
+const USDC_ADDRESS = "0x036CbD53842c5426634e7929541eC2318f3dCF7e";
+const ERC20_ABI = [{ name: "balanceOf", type: "function", stateMutability: "view", inputs: [{ type: "address" }], outputs: [{ type: "uint256" }] }];
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
@@ -353,8 +358,29 @@ async function main() {
       break;
     }
 
+    case "balance": {
+      const publicClient = createPublicClient({ chain: baseSepolia, transport: http() });
+      const raw = await publicClient.readContract({
+        address: USDC_ADDRESS,
+        abi: ERC20_ABI,
+        functionName: "balanceOf",
+        args: [wallet.address],
+      });
+      const balance = formatUnits(raw, 6);
+      console.log(`${balance} USDC`);
+      break;
+    }
+
     case "wallet": {
+      const pub = createPublicClient({ chain: baseSepolia, transport: http() });
+      const rawBal = await pub.readContract({
+        address: USDC_ADDRESS,
+        abi: ERC20_ABI,
+        functionName: "balanceOf",
+        args: [wallet.address],
+      });
       console.log(`Wallet address: ${wallet.address}`);
+      console.log(`Balance: ${formatUnits(rawBal, 6)} USDC`);
       console.log();
       console.log("To use paid APIs, send USDC to this address on Base Sepolia.");
       console.log("Payments are gasless ERC-2612 permit signatures — you only need USDC, not ETH.");
@@ -371,7 +397,8 @@ async function main() {
       console.log("  revoke <owner> <slug>            Revoke API approval");
       console.log("  approved                         List approved APIs");
       console.log("  history                          Spending history");
-      console.log("  wallet                           Show wallet address");
+      console.log("  wallet                           Show wallet address and balance");
+      console.log("  balance                          Show USDC balance");
   }
 }
 

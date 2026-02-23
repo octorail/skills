@@ -75,7 +75,15 @@ octorail history
 octorail wallet
 ```
 
-Shows the wallet address. The user must fund it with USDC on Base Sepolia to use paid APIs.
+Shows the wallet address and USDC balance. The user must fund it with USDC on Base Sepolia to use paid APIs.
+
+### Check Balance
+
+```bash
+octorail balance
+```
+
+Shows the current USDC balance on Base Sepolia.
 
 ## Rules
 

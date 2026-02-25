@@ -18,6 +18,16 @@ Call paid APIs from OctoRail. Payments happen automatically via x402 (USDC on Ba
 
 Run `octorail wallet` to see your wallet address. Fund it with USDC on Base Sepolia before calling any paid API. No ETH needed — payments are gasless permit signatures.
 
+## Command setup
+
+Before running any command, check if `octorail` is available. If not, run the install script to create the alias:
+
+```bash
+command -v octorail || bash ~/.agents/skills/octorail/scripts/octorail.sh --version
+```
+
+This installs dependencies, creates the `octorail` symlink in `~/.local/bin/`, and adds it to the PATH. After this, use `octorail` directly for all commands.
+
 ## Commands
 
 ### Browse APIs
@@ -84,6 +94,13 @@ octorail balance
 ```
 
 Shows the current USDC balance on Base Sepolia.
+
+## Insufficient funds
+
+If a call fails due to insufficient USDC balance, inform the user that:
+
+1. They can fund their wallet with USDC on Base Sepolia (run `octorail wallet` to get the address).
+2. If they **own the API**, they can add their wallet as a **free caller** in the OctoRail dashboard (API settings → Allowed Wallets). This lets them call their own API without being charged.
 
 ## Rules
 

@@ -34,4 +34,12 @@ if [ ! -L "$BIN_LINK" ] || [ "$(readlink "$BIN_LINK")" != "$SCRIPT_DIR/octorail.
   ln -sf "$SCRIPT_DIR/octorail.sh" "$BIN_LINK"
 fi
 
+# Ensure ~/.local/bin is in PATH via shell profile
+PATH_LINE='export PATH="$HOME/.local/bin:$PATH"'
+for RC_FILE in "$HOME/.zshrc" "$HOME/.bashrc"; do
+  if [ -f "$RC_FILE" ] && ! grep -qF '.local/bin' "$RC_FILE"; then
+    printf '\n# Added by octorail\n%s\n' "$PATH_LINE" >> "$RC_FILE"
+  fi
+done
+
 exec node "$CLI_DST" "$@"
